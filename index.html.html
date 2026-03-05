@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MBG Watch — Pengawasan Program Makan Bergizi Gratis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green-deep: #0a3622;
+    --green-mid: #166534;
+    --green-bright: #22c55e;
+    --green-light: #bbf7d0;
+    --amber: #f59e0b;
+    --amber-light: #fef3c7;
+    --red: #ef4444;
+    --cream: #fafaf7;
+    --ink: #0f1a0f;
+    --muted: #4b6c52;
+    --border: #d1fae5;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.25rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(250,250,247,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: var(--green-deep);
+    text-decoration: none;
+  }
+
+  .logo-badge {
+    width: 36px; height: 36px;
+    background: var(--green-deep);
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    font-size: 1.1rem;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--green-mid); }
+
+  .nav-cta {
+    background: var(--green-deep);
+    color: var(--green-light) !important;
+    padding: 0.5rem 1.25rem;
+    border-radius: 100px;
+    font-weight: 600 !important;
+  }
+
+  .nav-cta:hover { background: var(--green-mid); color: white !important; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 8rem 2.5rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34,197,94,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 90% 60%, rgba(22,101,52,0.08) 0%, transparent 60%);
+  }
+
+  .hero-grid-lines {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(34,197,94,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(34,197,94,0.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .hero-content {
+    position: relative;
+    max-width: 900px;
+    text-align: center;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--green-light);
+    color: var(--green-deep);
+    border: 1px solid rgba(34,197,94,0.3);
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .tag-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green-bright);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3rem, 7vw, 6rem);
+    font-weight: 800;
+    line-height: 1.05;
+    color: var(--green-deep);
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s ease 0.1s both;
+  }
+
+  h1 .accent {
+    color: var(--green-bright);
+    position: relative;
+    display: inline-block;
+  }
+
+  h1 .accent::after {
+    content: '';
+    position: absolute;
+    bottom: 4px; left: 0; right: 0;
+    height: 4px;
+    background: var(--green-bright);
+    border-radius: 2px;
+    opacity: 0.3;
+  }
+
+  .hero-desc {
+    font-size: 1.2rem;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 620px;
+    margin: 0 auto 2.5rem;
+    font-weight: 300;
+    animation: fadeUp 0.6s ease 0.2s both;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeUp 0.6s ease 0.3s both;
+  }
+
+  .btn-primary {
+    background: var(--green-deep);
+    color: var(--green-light);
+    padding: 0.85rem 2rem;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 2px solid transparent;
+  }
+
+  .btn-primary:hover {
+    background: var(--green-mid);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(10,54,34,0.2);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--green-deep);
+    padding: 0.85rem 2rem;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    border: 2px solid var(--border);
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .btn-outline:hover {
+    border-color: var(--green-bright);
+    background: var(--green-light);
+    transform: translateY(-2px);
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 3rem;
+    justify-content: center;
+    margin-top: 4rem;
+    animation: fadeUp 0.6s ease 0.4s both;
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--green-deep);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 400;
+    letter-spacing: 0.04em;
+  }
+
+  .stat-divider {
+    width: 1px;
+    background: var(--border);
+    align-self: stretch;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTION COMMON */
+  section {
+    padding: 6rem 2.5rem;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--green-bright);
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    color: var(--green-deep);
+    line-height: 1.1;
+    margin-bottom: 1.25rem;
+  }
+
+  .section-desc {
+    font-size: 1.05rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 560px;
+    font-weight: 300;
+  }
+
+  /* MASALAH SECTION */
+  .masalah {
+    background: var(--green-deep);
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .masalah::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(34,197,94,0.15) 0%, transparent 70%);
+  }
+
+  .masalah .section-title { color: var(--green-light); }
+  .masalah .section-desc { color: rgba(255,255,255,0.6); }
+  .masalah .section-label { color: var(--amber); }
+
+  .masalah-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .masalah-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .masalah-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(34,197,94,0.05) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .masalah-card:hover { border-color: rgba(34,197,94,0.3); transform: translateY(-4px); }
+  .masalah-card:hover::before { opacity: 1; }
+
+  .masalah-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .masalah-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.75rem;
+  }
+
+  .masalah-card p {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* FITUR SECTION */
+  .fitur-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  @media (max-width: 768px) {
+    .fitur-grid { grid-template-columns: 1fr; }
+  }
+
+  .fitur-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2.25rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .fitur-card:first-child {
+    grid-row: span 2;
+    background: var(--green-deep);
+    color: white;
+  }
+
+  .fitur-card:hover:not(:first-child) {
+    border-color: var(--green-bright);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(34,197,94,0.1);
+  }
+
+  .fitur-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--green-bright);
+    margin-bottom: 1.25rem;
+  }
+
+  .fitur-card:first-child .fitur-num { color: rgba(187,247,208,0.6); }
+
+  .fitur-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--green-deep);
+    margin-bottom: 0.75rem;
+  }
+
+  .fitur-card:first-child h3 {
+    color: var(--green-light);
+    font-size: 1.6rem;
+  }
+
+  .fitur-card p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  .fitur-card:first-child p { color: rgba(255,255,255,0.55); font-size: 1rem; }
+
+  .fitur-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .tag {
+    background: var(--green-light);
+    color: var(--green-deep);
+    padding: 0.3rem 0.75rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .fitur-card:first-child .tag {
+    background: rgba(34,197,94,0.15);
+    color: var(--green-light);
+  }
+
+  /* ALUR SECTION */
+  .alur {
+    background: linear-gradient(180deg, #f0fdf4 0%, var(--cream) 100%);
+  }
+
+  .alur-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 700px;
+    margin: 3rem auto 0;
+    position: relative;
+  }
+
+  .alur-steps::before {
+    content: '';
+    position: absolute;
+    left: 24px;
+    top: 24px;
+    bottom: 24px;
+    width: 2px;
+    background: linear-gradient(180deg, var(--green-bright) 0%, var(--green-light) 100%);
+  }
+
+  .step {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    padding: 1.5rem 0;
+    position: relative;
+  }
+
+  .step-num {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--green-deep);
+    color: var(--green-light);
+    display: grid;
+    place-items: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    border: 3px solid var(--cream);
+  }
+
+  .step-body h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--green-deep);
+    margin-bottom: 0.4rem;
+  }
+
+  .step-body p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* AKTOR SECTION */
+  .aktor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem;
+    margin-top: 3rem;
+  }
+
+  .aktor-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem 1.5rem;
+    text-align: center;
+    transition: all 0.3s;
+  }
+
+  .aktor-card:hover {
+    border-color: var(--green-bright);
+    box-shadow: 0 8px 30px rgba(34,197,94,0.1);
+    transform: translateY(-4px);
+  }
+
+  .aktor-emoji {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .aktor-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--green-deep);
+    margin-bottom: 0.5rem;
+  }
+
+  .aktor-card p {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.55;
+    font-weight: 300;
+  }
+
+  /* KEAMANAN SECTION */
+  .keamanan {
+    background: var(--green-deep);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .keamanan::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: -80px;
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .keamanan .section-title { color: var(--green-light); }
+  .keamanan .section-desc { color: rgba(255,255,255,0.5); }
+  .keamanan .section-label { color: var(--amber); }
+
+  .keamanan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .keamanan-card {
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 2rem;
+    background: rgba(255,255,255,0.04);
+    transition: all 0.3s;
+  }
+
+  .keamanan-card:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(245,158,11,0.3);
+  }
+
+  .shield-icon {
+    width: 44px; height: 44px;
+    background: rgba(245,158,11,0.15);
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-size: 1.3rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .keamanan-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.6rem;
+  }
+
+  .keamanan-card p {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* TECH STACK */
+  .tech {
+    padding: 4rem 2.5rem;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tech-label {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+
+  .tech-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+  }
+
+  .tech-pill {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 0.5rem 1.25rem;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--green-deep);
+    transition: all 0.2s;
+    cursor: default;
+  }
+
+  .tech-pill:hover {
+    background: var(--green-light);
+    border-color: var(--green-bright);
+  }
+
+  /* MANFAAT SECTION */
+  .manfaat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+
+  @media (max-width: 768px) {
+    .manfaat-grid { grid-template-columns: 1fr; }
+  }
+
+  .manfaat-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1.5rem;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    transition: all 0.3s;
+  }
+
+  .manfaat-item:hover {
+    border-color: var(--green-bright);
+    box-shadow: 0 6px 20px rgba(34,197,94,0.08);
+  }
+
+  .check {
+    width: 32px; height: 32px;
+    background: var(--green-light);
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    color: var(--green-deep);
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+
+  .manfaat-item p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.55;
+    font-weight: 300;
+    padding-top: 0.35rem;
+  }
+
+  /* CTA */
+  .cta {
+    background: linear-gradient(135deg, var(--green-deep) 0%, #0a4d2a 100%);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(34,197,94,0.12) 0%, transparent 70%);
+  }
+
+  .cta-content { position: relative; }
+
+  .cta h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 800;
+    color: var(--green-light);
+    margin-bottom: 1.25rem;
+    line-height: 1.1;
+  }
+
+  .cta p {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.55);
+    max-width: 500px;
+    margin: 0 auto 2.5rem;
+    font-weight: 300;
+    line-height: 1.65;
+  }
+
+  .cta .btn-primary {
+    background: var(--green-bright);
+    color: var(--green-deep);
+    font-size: 1.05rem;
+    padding: 1rem 2.25rem;
+  }
+
+  .cta .btn-primary:hover {
+    background: #16a34a;
+    color: white;
+    box-shadow: 0 12px 40px rgba(34,197,94,0.3);
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.4);
+    padding: 3rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: gap;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  footer .nav-logo { color: white; }
+
+  .footer-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .footer-links a {
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--green-bright); }
+
+  .footer-copy {
+    font-size: 0.8rem;
+    width: 100%;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    text-align: center;
+  }
+
+  /* MOBILE NAV */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.25rem; }
+    .nav-links { display: none; }
+    .hero { padding: 7rem 1.25rem 3rem; }
+    section { padding: 4rem 1.25rem; }
+    .hero-stats { gap: 2rem; }
+    .stat-divider { display: none; }
+    .fitur-grid { grid-template-columns: 1fr; }
+    .fitur-card:first-child { grid-row: span 1; }
+    footer { flex-direction: column; align-items: flex-start; }
+    .footer-links { flex-wrap: wrap; gap: 1rem; }
+  }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: all 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="logo-badge">🌾</div>
+    MBG Watch
+  </a>
+  <ul class="nav-links">
+    <li><a href="#masalah">Masalah</a></li>
+    <li><a href="#fitur">Fitur</a></li>
+    <li><a href="#alur">Cara Kerja</a></li>
+    <li><a href="#aktor">Aktor</a></li>
+    <li><a href="#cta" class="nav-cta">Mulai Lapor</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="hero-content">
+    <div class="hero-tag">
+      <span class="tag-dot"></span>
+      Prototype Sistem · Program MBG
+    </div>
+    <h1>Awasi MBG,<br>Bersama <span class="accent">Masyarakat</span></h1>
+    <p class="hero-desc">
+      Platform pengawasan partisipatif Program Makan Bergizi Gratis yang menghubungkan masyarakat, pemerintah daerah, dan BGN dalam satu ekosistem pemantauan berbasis teknologi.
+    </p>
+    <div class="hero-actions">
+      <a href="#fitur" class="btn-primary">Lihat Fitur →</a>
+      <a href="#alur" class="btn-outline">Cara Kerja</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-num">5</span>
+        <span class="stat-label">Jenis Aktor</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num">6</span>
+        <span class="stat-label">Fitur Utama</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num">3</span>
+        <span class="stat-label">Lapis Verifikasi</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num">∞</span>
+        <span class="stat-label">Transparansi</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MASALAH -->
+<section class="masalah" id="masalah">
+  <div class="container">
+    <p class="section-label reveal">Latar Belakang</p>
+    <h2 class="section-title reveal reveal-delay-1">Masalah yang<br>Perlu Diselesaikan</h2>
+    <p class="section-desc reveal reveal-delay-2">Program MBG menghadapi tantangan nyata di lapangan yang membutuhkan solusi sistematis dan partisipatif.</p>
+    <div class="masalah-grid">
+      <div class="masalah-card reveal reveal-delay-1">
+        <span class="masalah-icon">🍱</span>
+        <h3>Kualitas Tidak Konsisten</h3>
+        <p>Kualitas makanan yang didistribusikan ke sekolah sering tidak memenuhi standar gizi yang ditetapkan, tanpa mekanisme kontrol yang jelas.</p>
+      </div>
+      <div class="masalah-card reveal reveal-delay-2">
+        <span class="masalah-icon">🚚</span>
+        <h3>Distribusi Tidak Merata</h3>
+        <p>Beberapa wilayah mengalami keterlambatan atau kekurangan distribusi sementara wilayah lain mendapat berlebih tanpa data pemantauan real-time.</p>
+      </div>
+      <div class="masalah-card reveal reveal-delay-3">
+        <span class="masalah-icon">📢</span>
+        <h3>Keluhan Tidak Tertangani</h3>
+        <p>Tidak ada kanal resmi yang terintegrasi untuk menampung dan menindaklanjuti keluhan masyarakat secara sistematis dan transparan.</p>
+      </div>
+      <div class="masalah-card reveal reveal-delay-4">
+        <span class="masalah-icon">🔍</span>
+        <h3>Kurang Transparansi SPPG</h3>
+        <p>Operasional Satuan Pelayanan Pemenuhan Gizi tidak terpantau publik, membuka celah penyimpangan yang sulit dideteksi tanpa sistem pengawasan.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FITUR -->
+<section id="fitur">
+  <div class="container">
+    <p class="section-label reveal">Fitur Sistem</p>
+    <h2 class="section-title reveal reveal-delay-1">Dirancang untuk<br>Pengawasan Nyata</h2>
+    <p class="section-desc reveal reveal-delay-2">Setiap fitur dibangun untuk mengatasi masalah spesifik dalam ekosistem pengawasan MBG.</p>
+    <div class="fitur-grid">
+      <div class="fitur-card reveal">
+        <div class="fitur-num">01 — FITUR UTAMA</div>
+        <h3>Blockchain Audit Trail</h3>
+        <p>Setiap laporan yang masuk menghasilkan hash kriptografi yang dicatat pada blockchain ledger. Data tidak dapat dimanipulasi, menciptakan jejak audit permanen yang meningkatkan kepercayaan publik terhadap sistem.</p>
+        <div class="fitur-tags">
+          <span class="tag">SHA-256 Hash</span>
+          <span class="tag">Immutable Record</span>
+          <span class="tag">Anti-Manipulasi</span>
+        </div>
+      </div>
+      <div class="fitur-card reveal reveal-delay-1">
+        <div class="fitur-num">02</div>
+        <h3>Pelaporan Publik</h3>
+        <p>Masyarakat dapat mengirim laporan lengkap beserta foto bukti, lokasi GPS, dan deskripsi kejadian melalui platform yang mudah digunakan.</p>
+      </div>
+      <div class="fitur-card reveal reveal-delay-2">
+        <div class="fitur-num">03</div>
+        <h3>Geolocation Reporting</h3>
+        <p>Setiap laporan terverifikasi lokasi via GPS perangkat untuk memastikan kesesuaian dengan wilayah SPPG atau sekolah yang bersangkutan.</p>
+      </div>
+      <div class="fitur-card reveal reveal-delay-1">
+        <div class="fitur-num">04</div>
+        <h3>Verifikasi 3 Lapis</h3>
+        <p>Laporan melewati filter otomatis sistem, verifikasi relawan komunitas, dan konfirmasi pemerintah daerah sebelum diteruskan.</p>
+      </div>
+      <div class="fitur-card reveal reveal-delay-2">
+        <div class="fitur-num">05</div>
+        <h3>Dashboard Monitoring</h3>
+        <p>Dashboard real-time untuk BGN, pemerintah daerah, dan SPPG menampilkan peta distribusi, tren laporan, dan status penyelesaian masalah.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ALUR -->
+<section class="alur" id="alur">
+  <div class="container">
+    <div style="max-width:700px; margin:0 auto;">
+      <p class="section-label reveal">Cara Kerja</p>
+      <h2 class="section-title reveal reveal-delay-1">Alur Sistem<br>MBG Watch</h2>
+      <p class="section-desc reveal reveal-delay-2">Dari laporan masyarakat hingga tindakan pemerintah, semua terkoneksi dalam satu alur yang transparan.</p>
+      <div class="alur-steps">
+        <div class="step reveal">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <h3>Masyarakat Mengirim Laporan</h3>
+            <p>Pelapor mengisi formulir laporan melalui Website atau Aplikasi MBG Watch, dilengkapi foto bukti dan lokasi GPS otomatis.</p>
+          </div>
+        </div>
+        <div class="step reveal reveal-delay-1">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <h3>Laporan Disimpan di Database</h3>
+            <p>Sistem menyimpan laporan beserta metadata lengkap dan menghasilkan hash kriptografi SHA-256 dari seluruh isi laporan.</p>
+          </div>
+        </div>
+        <div class="step reveal reveal-delay-2">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <h3>Hash Dicatat di Blockchain</h3>
+            <p>Hash laporan — bukan data pribadi — dicatat pada blockchain ledger untuk menciptakan bukti yang tidak dapat diubah atau dihapus.</p>
+          </div>
+        </div>
+        <div class="step reveal reveal-delay-3">
+          <div class="step-num">04</div>
+          <div class="step-body">
+            <h3>Verifikasi Bertahap</h3>
+            <p>Laporan diproses melalui filter otomatis, kemudian verifikasi lapangan oleh relawan komunitas, lalu konfirmasi pemerintah daerah.</p>
+          </div>
+        </div>
+        <div class="step reveal reveal-delay-4">
+          <div class="step-num">05</div>
+          <div class="step-body">
+            <h3>Tampil di Dashboard Monitoring</h3>
+            <p>Data terverifikasi ditampilkan secara real-time pada dashboard untuk BGN, Pemerintah Daerah, dan pengelola SPPG sebagai dasar tindakan.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AKTOR -->
+<section id="aktor">
+  <div class="container">
+    <p class="section-label reveal">Ekosistem</p>
+    <h2 class="section-title reveal reveal-delay-1">Aktor yang<br>Terlibat</h2>
+    <p class="section-desc reveal reveal-delay-2">Lima kelompok aktor bekerja sama dalam satu ekosistem pengawasan yang saling melengkapi.</p>
+    <div class="aktor-grid">
+      <div class="aktor-card reveal reveal-delay-1">
+        <span class="aktor-emoji">👨‍👩‍👧</span>
+        <h3>Masyarakat</h3>
+        <p>Siswa, orang tua, warga sekitar sekolah, dan relawan sebagai pelapor utama di lapangan.</p>
+      </div>
+      <div class="aktor-card reveal reveal-delay-2">
+        <span class="aktor-emoji">🤝</span>
+        <h3>Komunitas Pengawas</h3>
+        <p>Mahasiswa, komunitas sosial, dan NGO pangan yang membantu verifikasi lapangan dan edukasi platform.</p>
+      </div>
+      <div class="aktor-card reveal reveal-delay-3">
+        <span class="aktor-emoji">🏫</span>
+        <h3>SPPG</h3>
+        <p>Satuan Pelayanan Pemenuhan Gizi yang menerima laporan, memberikan klarifikasi, dan menindaklanjuti masalah operasional.</p>
+      </div>
+      <div class="aktor-card reveal reveal-delay-1">
+        <span class="aktor-emoji">🏛️</span>
+        <h3>Pemerintah Daerah</h3>
+        <p>Instansi tingkat wilayah yang memverifikasi laporan, memberikan rekomendasi, dan mengevaluasi kinerja SPPG.</p>
+      </div>
+      <div class="aktor-card reveal reveal-delay-2">
+        <span class="aktor-emoji">🇮🇩</span>
+        <h3>BGN</h3>
+        <p>Badan Gizi Nasional sebagai pengambil kebijakan yang memantau data nasional dan merumuskan perbaikan program.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KEAMANAN -->
+<section class="keamanan" id="keamanan">
+  <div class="container">
+    <p class="section-label reveal">Keamanan Data</p>
+    <h2 class="section-title reveal reveal-delay-1">Dirancang dengan<br>Privasi Pertama</h2>
+    <p class="section-desc reveal reveal-delay-2">Data pengguna dilindungi berlapis — dari enkripsi hingga anonimisasi publik.</p>
+    <div class="keamanan-grid">
+      <div class="keamanan-card reveal reveal-delay-1">
+        <div class="shield-icon">🔐</div>
+        <h3>Enkripsi AES-256</h3>
+        <p>NIK dan nomor telepon pengguna dienkripsi menggunakan standar AES-256 sebelum disimpan ke dalam database sistem.</p>
+      </div>
+      <div class="keamanan-card reveal reveal-delay-2">
+        <div class="shield-icon">🪪</div>
+        <h3>Hash Identitas</h3>
+        <p>NIK pengguna dikonversi menjadi hash kriptografi sebelum disimpan, mencegah penyalahgunaan data identitas asli.</p>
+      </div>
+      <div class="keamanan-card reveal reveal-delay-3">
+        <div class="shield-icon">🛡️</div>
+        <h3>Rate Limiting</h3>
+        <p>Sistem membatasi jumlah laporan dari satu akun dalam periode waktu tertentu untuk mencegah spam dan serangan buzzer terorganisir.</p>
+      </div>
+      <div class="keamanan-card reveal reveal-delay-4">
+        <div class="shield-icon">👁️</div>
+        <h3>Anonimisasi Publik</h3>
+        <p>Identitas pelapor tidak pernah ditampilkan pada dashboard publik. Hanya data laporan agregat yang dapat diakses umum.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section class="tech">
+  <div class="container">
+    <p class="tech-label">Stack Teknologi yang Direkomendasikan</p>
+    <div class="tech-list">
+      <span class="tech-pill">React.js</span>
+      <span class="tech-pill">Node.js</span>
+      <span class="tech-pill">PostgreSQL</span>
+      <span class="tech-pill">Blockchain (Hyperledger / Ethereum)</span>
+      <span class="tech-pill">AES-256 Encryption</span>
+      <span class="tech-pill">SHA-256 Hashing</span>
+      <span class="tech-pill">Google Maps API</span>
+      <span class="tech-pill">WebSocket Real-time</span>
+      <span class="tech-pill">JWT Auth</span>
+      <span class="tech-pill">Docker</span>
+    </div>
+  </div>
+</section>
+
+<!-- MANFAAT -->
+<section id="manfaat">
+  <div class="container">
+    <p class="section-label reveal">Dampak</p>
+    <h2 class="section-title reveal reveal-delay-1">Manfaat<br>Implementasi</h2>
+    <div class="manfaat-grid">
+      <div class="manfaat-item reveal reveal-delay-1">
+        <div class="check">✓</div>
+        <p>Meningkatkan transparansi operasional Program MBG di seluruh wilayah Indonesia</p>
+      </div>
+      <div class="manfaat-item reveal reveal-delay-2">
+        <div class="check">✓</div>
+        <p>Memperkuat partisipasi masyarakat dalam pengawasan program secara aktif dan sistematis</p>
+      </div>
+      <div class="manfaat-item reveal reveal-delay-3">
+        <div class="check">✓</div>
+        <p>Mempercepat deteksi masalah distribusi pangan sebelum berkembang menjadi lebih besar</p>
+      </div>
+      <div class="manfaat-item reveal reveal-delay-1">
+        <div class="check">✓</div>
+        <p>Meningkatkan akuntabilitas operasional SPPG kepada masyarakat dan pemerintah</p>
+      </div>
+      <div class="manfaat-item reveal reveal-delay-2">
+        <div class="check">✓</div>
+        <p>Menyediakan data real-time yang valid sebagai dasar pengambilan kebijakan pangan nasional</p>
+      </div>
+      <div class="manfaat-item reveal reveal-delay-3">
+        <div class="check">✓</div>
+        <p>Mencegah manipulasi data laporan melalui teknologi blockchain yang tidak dapat diubah</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="cta">
+  <div class="container">
+    <div class="cta-content">
+      <h2>Bergabung dalam<br>Gerakan Pengawasan</h2>
+      <p>MBG Watch adalah milik kita bersama. Setiap laporan adalah kontribusi nyata untuk perbaikan program gizi nasional.</p>
+      <a href="#" class="btn-primary">🌾 Laporkan Sekarang</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="nav-logo">
+    <div class="logo-badge">🌾</div>
+    MBG Watch
+  </a>
+  <ul class="footer-links">
+    <li><a href="#masalah">Tentang</a></li>
+    <li><a href="#fitur">Fitur</a></li>
+    <li><a href="#alur">Cara Kerja</a></li>
+    <li><a href="#keamanan">Keamanan</a></li>
+    <li><a href="#">GitHub</a></li>
+  </ul>
+  <div class="footer-copy">
+    © 2025 MBG Watch · Prototype Sistem Pengawasan Program Makan Bergizi Gratis · Open Source
+  </div>
+</footer>
+
+<script>
+  // SCROLL REVEAL
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+  reveals.forEach(el => observer.observe(el));
+
+  // COUNTER ANIMATION
+  function animateCounter(el, target, suffix = '') {
+    const duration = 1800;
+    const start = performance.now();
+    const update = (time) => {
+      const progress = Math.min((time - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      if (target === Infinity) {
+        el.textContent = '∞';
+      } else {
+        el.textContent = Math.floor(eased * target) + suffix;
+      }
+      if (progress < 1) requestAnimationFrame(update);
+    };
+    requestAnimationFrame(update);
+  }
+
+  const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const nums = e.target.querySelectorAll('.stat-num');
+        const targets = [5, 6, 3];
+        nums.forEach((n, i) => {
+          if (n.textContent !== '∞') animateCounter(n, targets[i]);
+        });
+        statsObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  const statsEl = document.querySelector('.hero-stats');
+  if (statsEl) statsObserver.observe(statsEl);
+</script>
+</body>
+</html>
