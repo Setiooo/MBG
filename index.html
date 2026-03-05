@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MBG Watch — Sistem Pengawasan Program Makan Bergizi Gratis</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --g-deep:#0a3622;--g-mid:#166534;--g-bright:#22c55e;--g-light:#bbf7d0;--g-pale:#f0fdf4;
+  --amber:#f59e0b;--amber-lt:#fef3c7;--red:#ef4444;--red-lt:#fee2e2;
+  --blue:#3b82f6;--blue-lt:#dbeafe;
+  --cream:#fafaf7;--ink:#0f1a0f;--muted:#4b6c52;--border:#d1fae5;--white:#fff;
+  --shadow:0 4px 24px rgba(10,54,34,0.08);
+}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;}
+
+/* ===== SCREENS ===== */
+.screen{display:none;min-height:100vh;}
+.screen.active{display:block;}
+
+/* ===== LANDING ===== */
+#screen-landing{background:var(--cream);}
+.land-nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:1rem 2.5rem;display:flex;align-items:center;justify-content:space-between;
+  background:rgba(250,250,247,0.9);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.logo{display:flex;align-items:center;gap:.6rem;font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;color:var(--g-deep);}
+.logo-box{width:34px;height:34px;background:var(--g-deep);border-radius:8px;display:grid;place-items:center;font-size:1rem;}
+.nav-btns{display:flex;gap:.75rem;}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.25rem;border-radius:100px;font-weight:600;font-size:.9rem;cursor:pointer;border:none;transition:all .2s;text-decoration:none;}
+.btn-green{background:var(--g-deep);color:var(--g-light);}
+.btn-green:hover{background:var(--g-mid);transform:translateY(-1px);box-shadow:0 6px 20px rgba(10,54,34,.2);}
+.btn-outline{background:transparent;color:var(--g-deep);border:2px solid var(--border);}
+.btn-outline:hover{border-color:var(--g-bright);background:var(--g-pale);}
+.btn-sm{padding:.45rem 1rem;font-size:.82rem;}
+.btn-red{background:var(--red);color:#fff;}
+.btn-red:hover{background:#dc2626;}
+.btn-amber{background:var(--amber);color:#fff;}
+.btn-amber:hover{background:#d97706;}
+.btn-blue{background:var(--blue);color:#fff;}
+.btn-blue:hover{background:#2563eb;}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--g-pale);}
+
+.hero{min-height:100vh;display:grid;place-items:center;padding:8rem 2rem 4rem;text-align:center;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(34,197,94,.12) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 90% 70%,rgba(22,101,52,.07) 0%,transparent 60%);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(34,197,94,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(34,197,94,.05) 1px,transparent 1px);background-size:60px 60px;}
+.hero-content{position:relative;max-width:860px;}
+.badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--g-light);color:var(--g-deep);border:1px solid rgba(34,197,94,.3);padding:.35rem .9rem;border-radius:100px;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:1.75rem;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--g-bright);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.4);}}
+h1{font-family:'Syne',sans-serif;font-size:clamp(2.5rem,6vw,5.5rem);font-weight:800;line-height:1.05;color:var(--g-deep);margin-bottom:1.25rem;}
+.accent{color:var(--g-bright);}
+.hero-p{font-size:1.1rem;line-height:1.7;color:var(--muted);max-width:580px;margin:0 auto 2.5rem;font-weight:300;}
+.hero-ctas{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.btn-big{padding:.9rem 2rem;font-size:1rem;border-radius:100px;}
+
+/* LOGIN PORTAL */
+.portal{max-width:960px;margin:0 auto;padding:5rem 2rem;}
+.portal-title{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--g-deep);text-align:center;margin-bottom:.5rem;}
+.portal-sub{text-align:center;color:var(--muted);font-weight:300;margin-bottom:3rem;}
+.portal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+@media(max-width:700px){.portal-grid{grid-template-columns:1fr;}}
+.portal-card{background:#fff;border:2px solid var(--border);border-radius:24px;padding:2.5rem 2rem;text-align:center;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;}
+.portal-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(34,197,94,.06),transparent);opacity:0;transition:opacity .3s;}
+.portal-card:hover{border-color:var(--g-bright);transform:translateY(-6px);box-shadow:0 16px 40px rgba(34,197,94,.12);}
+.portal-card:hover::before{opacity:1;}
+.portal-icon{font-size:3.5rem;margin-bottom:1.25rem;display:block;}
+.portal-card h3{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;color:var(--g-deep);margin-bottom:.6rem;}
+.portal-card p{font-size:.85rem;color:var(--muted);line-height:1.55;font-weight:300;margin-bottom:1.5rem;}
+.portal-card .role-tag{display:inline-block;background:var(--g-pale);color:var(--g-mid);padding:.25rem .75rem;border-radius:100px;font-size:.72rem;font-weight:700;letter-spacing:.05em;margin-bottom:1rem;}
+
+/* ===== LOGIN MODAL ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(10,54,34,.5);backdrop-filter:blur(8px);z-index:200;display:none;place-items:center;padding:1rem;}
+.modal-overlay.open{display:grid;}
+.modal{background:#fff;border-radius:24px;padding:2.5rem;width:100%;max-width:440px;position:relative;animation:slideUp .3s ease;}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+.modal-close{position:absolute;top:1rem;right:1rem;background:var(--g-pale);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:grid;place-items:center;color:var(--muted);}
+.modal-close:hover{background:var(--border);}
+.modal h2{font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;color:var(--g-deep);margin-bottom:.35rem;}
+.modal p{font-size:.85rem;color:var(--muted);margin-bottom:1.75rem;}
+.form-group{margin-bottom:1.1rem;}
+.form-group label{display:block;font-size:.8rem;font-weight:600;color:var(--g-deep);margin-bottom:.4rem;letter-spacing:.03em;}
+.form-group input, .form-group select, .form-group textarea{
+  width:100%;padding:.7rem 1rem;border:1.5px solid var(--border);border-radius:12px;
+  font-family:'DM Sans',sans-serif;font-size:.92rem;color:var(--ink);background:#fff;
+  transition:border-color .2s;outline:none;
+}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--g-bright);}
+.form-group textarea{resize:vertical;min-height:90px;}
+.form-hint{font-size:.75rem;color:var(--muted);margin-top:.3rem;}
+.demo-creds{background:var(--g-pale);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:1.25rem;font-size:.8rem;color:var(--muted);}
+.demo-creds strong{color:var(--g-deep);display:block;margin-bottom:.35rem;font-size:.82rem;}
+
+/* ===== APP SHELL ===== */
+#screen-app{background:#f5f7f2;}
+.app-shell{display:flex;min-height:100vh;}
+.sidebar{width:260px;background:var(--g-deep);flex-shrink:0;display:flex;flex-direction:column;padding:1.5rem 1rem;position:fixed;top:0;left:0;bottom:0;z-index:50;}
+.sidebar-logo{display:flex;align-items:center;gap:.6rem;margin-bottom:2rem;padding:.5rem;}
+.sidebar-logo span{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;color:var(--g-light);}
+.nav-section{font-size:.65rem;font-weight:700;letter-spacing:.1em;color:rgba(187,247,208,.4);text-transform:uppercase;padding:.5rem;margin-top:1rem;margin-bottom:.25rem;}
+.nav-item{display:flex;align-items:center;gap:.75rem;padding:.7rem 1rem;border-radius:12px;cursor:pointer;transition:all .2s;color:rgba(255,255,255,.55);font-size:.88rem;font-weight:500;border:none;background:transparent;width:100%;text-align:left;}
+.nav-item:hover{background:rgba(255,255,255,.08);color:#fff;}
+.nav-item.active{background:rgba(34,197,94,.15);color:var(--g-light);}
+.nav-item .ni{font-size:1.1rem;width:20px;text-align:center;}
+.sidebar-user{margin-top:auto;padding:1rem;background:rgba(255,255,255,.06);border-radius:12px;}
+.sidebar-user .su-name{font-weight:600;color:white;font-size:.9rem;}
+.sidebar-user .su-role{font-size:.75rem;color:rgba(187,247,208,.6);}
+.sidebar-user .su-logout{font-size:.75rem;color:rgba(255,255,255,.4);cursor:pointer;margin-top:.5rem;display:inline-block;}
+.sidebar-user .su-logout:hover{color:var(--red);}
+
+.main-content{margin-left:260px;flex:1;padding:2rem;}
+.page{display:none;}
+.page.active{display:block;}
+.page-header{margin-bottom:2rem;}
+.page-header h2{font-family:'Syne',sans-serif;font-size:1.75rem;font-weight:800;color:var(--g-deep);}
+.page-header p{color:var(--muted);font-size:.9rem;margin-top:.25rem;}
+
+/* STAT CARDS */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:2rem;}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.5rem;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:radial-gradient(circle,rgba(34,197,94,.1),transparent);border-radius:50%;}
+.stat-num{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;color:var(--g-deep);}
+.stat-label{font-size:.78rem;color:var(--muted);font-weight:400;margin-top:.2rem;}
+.stat-change{font-size:.75rem;font-weight:600;margin-top:.5rem;}
+.stat-up{color:var(--g-bright);}
+.stat-down{color:var(--red);}
+
+/* TABLE */
+.table-wrap{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.table-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.table-header h3{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--g-deep);}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--g-pale);padding:.75rem 1.25rem;text-align:left;font-size:.75rem;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;}
+td{padding:.9rem 1.25rem;border-top:1px solid #f0fdf4;font-size:.85rem;color:var(--ink);}
+tr:hover td{background:#f8fef9;}
+.status-badge{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .75rem;border-radius:100px;font-size:.72rem;font-weight:700;}
+.status-pending{background:var(--amber-lt);color:#92400e;}
+.status-verified{background:var(--blue-lt);color:#1e40af;}
+.status-done{background:var(--g-pale);color:var(--g-mid);}
+.status-rejected{background:var(--red-lt);color:#991b1b;}
+
+/* REPORT FORM */
+.report-form{background:#fff;border:1px solid var(--border);border-radius:20px;padding:2rem;max-width:700px;}
+.form-section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--g-deep);margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--border);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:600px){.form-row{grid-template-columns:1fr;}}
+.file-upload{border:2px dashed var(--border);border-radius:12px;padding:2rem;text-align:center;cursor:pointer;transition:all .2s;}
+.file-upload:hover{border-color:var(--g-bright);background:var(--g-pale);}
+.file-upload .fu-icon{font-size:2rem;margin-bottom:.5rem;}
+.file-upload p{font-size:.85rem;color:var(--muted);}
+.progress-bar{height:6px;background:var(--border);border-radius:100px;overflow:hidden;margin-top:.5rem;}
+.progress-fill{height:100%;background:var(--g-bright);border-radius:100px;transition:width .3s;}
+
+/* MAP PLACEHOLDER */
+.map-box{background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border-radius:12px;height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--g-mid);font-size:.85rem;border:1px solid var(--border);cursor:pointer;transition:all .2s;}
+.map-box:hover{border-color:var(--g-bright);}
+.map-box .map-icon{font-size:2rem;margin-bottom:.5rem;}
+
+/* TOAST */
+.toast-container{position:fixed;bottom:2rem;right:2rem;z-index:999;display:flex;flex-direction:column;gap:.75rem;}
+.toast{background:#fff;border:1px solid var(--border);border-radius:14px;padding:1rem 1.25rem;box-shadow:0 8px 30px rgba(0,0,0,.12);max-width:340px;display:flex;align-items:flex-start;gap:.75rem;animation:toastIn .3s ease;}
+@keyframes toastIn{from{opacity:0;transform:translateX(40px);}to{opacity:1;transform:translateX(0);}}
+.toast-icon{font-size:1.3rem;flex-shrink:0;margin-top:.1rem;}
+.toast-body strong{display:block;font-size:.88rem;color:var(--ink);margin-bottom:.15rem;}
+.toast-body span{font-size:.78rem;color:var(--muted);}
+.toast.success .toast-icon::after{content:'✅';}
+.toast.error .toast-icon::after{content:'❌';}
+.toast.info .toast-icon::after{content:'ℹ️';}
+.toast.warning .toast-icon::after{content:'⚠️';}
+
+/* BLOCKCHAIN FEED */
+.chain-feed{display:flex;flex-direction:column;gap:.75rem;}
+.chain-item{background:#fff;border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;display:flex;gap:1rem;align-items:flex-start;}
+.chain-hash{font-family:monospace;font-size:.72rem;color:var(--g-mid);background:var(--g-pale);padding:.2rem .5rem;border-radius:6px;word-break:break-all;}
+.chain-meta{font-size:.75rem;color:var(--muted);}
+
+/* NOTIFICATION PANEL */
+.notif-list{display:flex;flex-direction:column;gap:.75rem;}
+.notif-item{background:#fff;border-left:3px solid var(--g-bright);border-radius:0 12px 12px 0;padding:1rem 1.25rem;border:1px solid var(--border);border-left:3px solid var(--g-bright);}
+.notif-item.unread{background:var(--g-pale);}
+.notif-item h4{font-size:.88rem;font-weight:600;color:var(--ink);margin-bottom:.25rem;}
+.notif-item p{font-size:.78rem;color:var(--muted);}
+.notif-item.amber{border-left-color:var(--amber);}
+.notif-item.red{border-left-color:var(--red);}
+
+/* VERIFICATION CARD */
+.verif-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1rem;}
+.verif-card h4{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--g-deep);margin-bottom:.35rem;}
+.verif-card .verif-meta{display:flex;gap:1rem;font-size:.78rem;color:var(--muted);margin-bottom:.75rem;flex-wrap:wrap;}
+.verif-card .verif-desc{font-size:.85rem;color:var(--ink);line-height:1.55;margin-bottom:1rem;}
+.verif-actions{display:flex;gap:.75rem;flex-wrap:wrap;}
+
+/* CHART BARS */
+.chart-wrap{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;}
+.chart-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;color:var(--g-deep);margin-bottom:1.25rem;}
+.bar-chart{display:flex;flex-direction:column;gap:.75rem;}
+.bar-row{display:flex;align-items:center;gap:1rem;}
+.bar-label{width:130px;font-size:.78rem;color:var(--muted);text-align:right;flex-shrink:0;}
+.bar-track{flex:1;height:28px;background:var(--g-pale);border-radius:8px;overflow:hidden;}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--g-mid),var(--g-bright));border-radius:8px;display:flex;align-items:center;justify-content:flex-end;padding-right:.6rem;font-size:.72rem;font-weight:700;color:#fff;transition:width 1s cubic-bezier(.22,1,.36,1);}
+
+/* PIE-LIKE */
+.donut-wrap{display:flex;gap:2rem;align-items:center;flex-wrap:wrap;}
+.donut-legend{display:flex;flex-direction:column;gap:.6rem;}
+.legend-item{display:flex;align-items:center;gap:.6rem;font-size:.82rem;}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+
+/* PROFILE */
+.profile-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:2rem;max-width:500px;}
+.avatar{width:80px;height:80px;border-radius:20px;background:var(--g-light);display:grid;place-items:center;font-size:2.5rem;margin-bottom:1rem;}
+.profile-name{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;color:var(--g-deep);}
+.profile-role{color:var(--muted);font-size:.85rem;margin-bottom:1.5rem;}
+.profile-info{display:flex;flex-direction:column;gap:.75rem;}
+.pi-row{display:flex;gap:1rem;font-size:.85rem;}
+.pi-key{color:var(--muted);width:120px;flex-shrink:0;}
+.pi-val{color:var(--ink);font-weight:500;}
+
+/* WELCOME BANNER */
+.welcome-banner{background:linear-gradient(135deg,var(--g-deep) 0%,#0a4d2a 100%);border-radius:20px;padding:2rem 2.5rem;color:#fff;margin-bottom:2rem;position:relative;overflow:hidden;}
+.welcome-banner::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(34,197,94,.2),transparent);}
+.welcome-banner h2{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:.35rem;}
+.welcome-banner p{font-size:.88rem;color:rgba(255,255,255,.6);font-weight:300;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:100px;}
+::-webkit-scrollbar-thumb:hover{background:var(--g-bright);}
+
+/* MOBILE */
+@media(max-width:768px){
+  .sidebar{width:0;overflow:hidden;}
+  .main-content{margin-left:0;}
+  .land-nav{padding:1rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== LANDING SCREEN ===== -->
+<div id="screen-landing" class="screen active">
+  <nav class="land-nav">
+    <div class="logo"><div class="logo-box">🌾</div> MBG Watch</div>
+    <div class="nav-btns">
+      <button class="btn btn-outline btn-sm" onclick="openModal('modal-info')">📖 Tentang</button>
+      <button class="btn btn-green btn-sm" onclick="scrollToPortal()">Masuk Sistem →</button>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="badge"><span class="dot"></span> Sistem Aktif · Prototype MBG Watch</div>
+      <h1>Awasi MBG,<br>Bersama <span class="accent">Rakyat</span></h1>
+      <p class="hero-p">Platform pengawasan partisipatif Program Makan Bergizi Gratis — transparan, terverifikasi, dan aman dengan teknologi blockchain.</p>
+      <div class="hero-ctas">
+        <button class="btn btn-green btn-big" onclick="scrollToPortal()">🔐 Masuk ke Sistem</button>
+        <button class="btn btn-outline btn-big" onclick="openModal('modal-info')">Pelajari Sistem</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGIN PORTAL -->
+  <div class="portal" id="portal-section">
+    <h2 class="portal-title">Pilih Peran Anda</h2>
+    <p class="portal-sub">Sistem MBG Watch melayani 3 jenis pengguna dengan akses dan fitur berbeda</p>
+    <div class="portal-grid">
+      <div class="portal-card" onclick="openModal('modal-login-masyarakat')">
+        <span class="portal-icon">👨‍👩‍👧</span>
+        <div class="role-tag">PELAPOR</div>
+        <h3>Masyarakat</h3>
+        <p>Siswa, orang tua, warga, dan relawan yang ingin melaporkan kondisi pelaksanaan MBG di lapangan.</p>
+        <button class="btn btn-green" style="width:100%">Masuk sebagai Masyarakat →</button>
+      </div>
+      <div class="portal-card" onclick="openModal('modal-login-pemda')">
+        <span class="portal-icon">🏛️</span>
+        <div class="role-tag">VERIFIKATOR</div>
+        <h3>Pemerintah Daerah</h3>
+        <p>Instansi daerah yang bertugas memverifikasi laporan, memberikan rekomendasi, dan evaluasi SPPG.</p>
+        <button class="btn btn-blue" style="width:100%">Masuk sebagai Pemda →</button>
+      </div>
+      <div class="portal-card" onclick="openModal('modal-login-bgn')">
+        <span class="portal-icon">🇮🇩</span>
+        <div class="role-tag">ADMIN NASIONAL</div>
+        <h3>BGN / SPPG</h3>
+        <p>Badan Gizi Nasional dan pengelola SPPG untuk monitoring data nasional dan evaluasi program.</p>
+        <button class="btn btn-amber" style="width:100%">Masuk sebagai BGN/SPPG →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== APP SCREEN ===== -->
+<div id="screen-app" class="screen">
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-box">🌾</div>
+        <span>MBG Watch</span>
+      </div>
+      <div id="sidebar-nav"></div>
+      <div class="sidebar-user" id="sidebar-user"></div>
+    </aside>
+    <main class="main-content" id="main-content">
+      <!-- Pages injected here -->
+    </main>
+  </div>
+</div>
+
+<!-- ===== MODALS ===== -->
+
+<!-- INFO MODAL -->
+<div class="modal-overlay" id="modal-info">
+  <div class="modal" style="max-width:540px;">
+    <button class="modal-close" onclick="closeModal('modal-info')">✕</button>
+    <h2>🌾 Tentang MBG Watch</h2>
+    <p>Sistem pengawasan partisipatif Program Makan Bergizi Gratis</p>
+    <div style="font-size:.87rem;color:var(--muted);line-height:1.7;">
+      <p style="margin-bottom:.75rem;"><strong style="color:var(--g-deep);">Masalah yang diselesaikan:</strong> Kualitas makanan tidak konsisten, distribusi tidak merata, keluhan tidak tertangani, kurangnya transparansi SPPG.</p>
+      <p style="margin-bottom:.75rem;"><strong style="color:var(--g-deep);">Teknologi keamanan:</strong> Enkripsi AES-256, Hash SHA-256 identitas pengguna, Rate Limiting laporan, Anonimisasi data publik, Blockchain Audit Trail.</p>
+      <p><strong style="color:var(--g-deep);">3 Pengguna:</strong> Masyarakat (pelapor) → Pemerintah Daerah (verifikator) → BGN/SPPG (monitor nasional).</p>
+    </div>
+    <button class="btn btn-green" style="width:100%;margin-top:1.5rem;" onclick="closeModal('modal-info');scrollToPortal()">Mulai Gunakan Sistem →</button>
+  </div>
+</div>
+
+<!-- LOGIN MASYARAKAT -->
+<div class="modal-overlay" id="modal-login-masyarakat">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-login-masyarakat')">✕</button>
+    <h2>👨‍👩‍👧 Login Masyarakat</h2>
+    <p>Masuk untuk melaporkan kondisi MBG di lapangan</p>
+    <div class="demo-creds"><strong>🔑 Demo Akun:</strong> NIK: 3201234567890001 | Nama: Budi Santoso</div>
+    <div class="form-group"><label>NIK (16 digit)</label><input type="text" id="m-nik" placeholder="3201234567890001" maxlength="16" value="3201234567890001"></div>
+    <div class="form-group"><label>Nama Lengkap</label><input type="text" id="m-nama" placeholder="Nama sesuai KTP" value="Budi Santoso"></div>
+    <div class="form-group"><label>No. HP / WhatsApp</label><input type="text" id="m-hp" placeholder="08xxxxxxxxxx" value="081234567890"></div>
+    <div class="form-group"><label>Kategori</label>
+      <select id="m-kategori">
+        <option>Orang Tua Siswa</option>
+        <option>Siswa Penerima MBG</option>
+        <option>Warga Sekitar Sekolah</option>
+        <option>Relawan Pengawas</option>
+        <option>Organisasi Masyarakat</option>
+      </select>
+    </div>
+    <button class="btn btn-green" style="width:100%;" onclick="loginAs('masyarakat')">Masuk & Laporkan →</button>
+  </div>
+</div>
+
+<!-- LOGIN PEMDA -->
+<div class="modal-overlay" id="modal-login-pemda">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-login-pemda')">✕</button>
+    <h2>🏛️ Login Pemerintah Daerah</h2>
+    <p>Akses verifikasi laporan wilayah Anda</p>
+    <div class="demo-creds"><strong>🔑 Demo Akun:</strong> ID: PEMDA-JKT-001 | Password: pemda123</div>
+    <div class="form-group"><label>ID Instansi</label><input type="text" id="pd-id" placeholder="PEMDA-JKT-001" value="PEMDA-JKT-001"></div>
+    <div class="form-group"><label>Password</label><input type="password" id="pd-pass" placeholder="••••••••" value="pemda123"></div>
+    <div class="form-group"><label>Wilayah Kerja</label>
+      <select id="pd-wilayah">
+        <option>DKI Jakarta</option><option>Jawa Barat</option><option>Jawa Tengah</option>
+        <option>Jawa Timur</option><option>Banten</option><option>Sumatera Utara</option>
+      </select>
+    </div>
+    <button class="btn btn-blue" style="width:100%;" onclick="loginAs('pemda')">Masuk ke Dashboard →</button>
+  </div>
+</div>
+
+<!-- LOGIN BGN -->
+<div class="modal-overlay" id="modal-login-bgn">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-login-bgn')">✕</button>
+    <h2>🇮🇩 Login BGN / SPPG</h2>
+    <p>Akses monitoring nasional program MBG</p>
+    <div class="demo-creds"><strong>🔑 Demo Akun:</strong> Email: admin@bgn.go.id | Password: bgn2025</div>
+    <div class="form-group"><label>Email Instansi</label><input type="email" id="bgn-email" placeholder="admin@bgn.go.id" value="admin@bgn.go.id"></div>
+    <div class="form-group"><label>Password</label><input type="password" id="bgn-pass" placeholder="••••••••" value="bgn2025"></div>
+    <div class="form-group"><label>Unit</label>
+      <select id="bgn-unit">
+        <option>BGN Pusat</option><option>SPPG Jakarta Selatan</option><option>SPPG Bandung</option><option>SPPG Surabaya</option>
+      </select>
+    </div>
+    <button class="btn btn-amber" style="width:100%;" onclick="loginAs('bgn')">Masuk ke Control Center →</button>
+  </div>
+</div>
+
+<!-- DETAIL LAPORAN MODAL -->
+<div class="modal-overlay" id="modal-detail">
+  <div class="modal" style="max-width:560px;">
+    <button class="modal-close" onclick="closeModal('modal-detail')">✕</button>
+    <div id="modal-detail-content"></div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+// ============================================================
+// DATA STORE
+// ============================================================
+const DB = {
+  laporan: [
+    {id:'LP-001',tanggal:'2025-03-01',waktu:'08:12',sekolah:'SDN 01 Mampang',wilayah:'Jakarta Selatan',jenis:'Kualitas Makanan',deskripsi:'Nasi terasa basi dan lauk tidak sesuai menu standar. Bau tidak sedap dari kotak makan.',status:'pending',pelapor:'Anonim',foto:true,hash:'a3f9c2d8b1e7f406',verified_by:null},
+    {id:'LP-002',tanggal:'2025-03-02',waktu:'09:45',sekolah:'SMP 14 Tebet',wilayah:'Jakarta Selatan',jenis:'Keterlambatan Distribusi',deskripsi:'Makanan tiba jam 12.30 padahal jadwal makan siang jam 11.00. Siswa sudah lapar.',status:'verified',pelapor:'Anonim',foto:true,hash:'b7e4a1c9d2f8e305',verified_by:'Pemda DKI'},
+    {id:'LP-003',tanggal:'2025-03-03',waktu:'11:20',sekolah:'SDN 05 Kebayoran',wilayah:'Jakarta Selatan',jenis:'Porsi Tidak Memadai',deskripsi:'Porsi nasi hanya setengah dari standar. Lauk tidak ada protein sama sekali hari ini.',status:'done',pelapor:'Anonim',foto:false,hash:'c1d6b4e9a3f7c208',verified_by:'Pemda DKI'},
+    {id:'LP-004',tanggal:'2025-03-04',waktu:'07:55',sekolah:'SDN 03 Pancoran',wilayah:'Jakarta Selatan',jenis:'Dugaan Penyimpangan',deskripsi:'SPPG terlihat mengurangi jumlah porsi secara signifikan dibanding bulan lalu.',status:'pending',pelapor:'Anonim',foto:true,hash:'d4f2c8b6e1a9d507',verified_by:null},
+    {id:'LP-005',tanggal:'2025-03-04',waktu:'10:30',sekolah:'SMA 7 Jakarta',wilayah:'Jakarta Pusat',jenis:'Kualitas Makanan',deskripsi:'Sayuran sudah layu dan tidak segar. Kondisi kotak makan bocor.',status:'pending',pelapor:'Anonim',foto:true,hash:'e9a1d5c3b8f4e106',verified_by:null},
+    {id:'LP-006',tanggal:'2025-03-05',waktu:'08:00',sekolah:'SDN 12 Menteng',wilayah:'Jakarta Pusat',jenis:'Keterlambatan Distribusi',deskripsi:'Pengiriman belum datang sampai jam 10 pagi. Sudah dihubungi tapi tidak ada respons dari SPPG.',status:'verified',pelapor:'Anonim',foto:false,hash:'f2b7e4a6c9d1f803',verified_by:'Pemda DKI'},
+  ],
+  blockchain: [
+    {block:1002,hash:'a3f9c2d8b1e7f406',prev:'9e2b4f1c8d7a3e05',ts:'2025-03-01 08:12:45',laporan:'LP-001'},
+    {block:1003,hash:'b7e4a1c9d2f8e305',prev:'a3f9c2d8b1e7f406',ts:'2025-03-02 09:45:12',laporan:'LP-002'},
+    {block:1004,hash:'c1d6b4e9a3f7c208',prev:'b7e4a1c9d2f8e305',ts:'2025-03-03 11:20:33',laporan:'LP-003'},
+    {block:1005,hash:'d4f2c8b6e1a9d507',prev:'c1d6b4e9a3f7c208',ts:'2025-03-04 07:55:01',laporan:'LP-004'},
+    {block:1006,hash:'e9a1d5c3b8f4e106',prev:'d4f2c8b6e1a9d507',ts:'2025-03-04 10:30:17',laporan:'LP-005'},
+    {block:1007,hash:'f2b7e4a6c9d1f803',prev:'e9a1d5c3b8f4e106',ts:'2025-03-05 08:00:44',laporan:'LP-006'},
+  ]
+};
+
+let currentUser = null;
+let currentPage = null;
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function scrollToPortal(){document.getElementById('portal-section').scrollIntoView({behavior:'smooth'});}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+document.querySelectorAll('.modal-overlay').forEach(el=>{
+  el.addEventListener('click',e=>{if(e.target===el) el.classList.remove('open');});
+});
+
+// ============================================================
+// AUTH
+// ============================================================
+function loginAs(role){
+  const roles={
+    masyarakat:{nama:document.getElementById('m-nama').value||'Budi Santoso',role:'masyarakat',label:'Masyarakat',avatar:'👨‍👩‍👧',wilayah:'Jakarta Selatan',nik:document.getElementById('m-nik').value,kategori:document.getElementById('m-kategori').value},
+    pemda:{nama:'Dinas Ketahanan Pangan DKI',role:'pemda',label:'Pemerintah Daerah',avatar:'🏛️',wilayah:document.getElementById('pd-wilayah').value,id:'PEMDA-JKT-001'},
+    bgn:{nama:'Admin BGN Pusat',role:'bgn',label:'BGN / SPPG',avatar:'🇮🇩',unit:document.getElementById('bgn-unit')?.value||'BGN Pusat'},
+  };
+  currentUser=roles[role];
+  document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('open'));
+  showToast('success','Login berhasil!',`Selamat datang, ${currentUser.nama}`);
+  setTimeout(()=>launchApp(),600);
+}
+
+function logout(){
+  currentUser=null;
+  document.getElementById('screen-app').classList.remove('active');
+  document.getElementById('screen-landing').classList.add('active');
+  showToast('info','Keluar','Anda telah keluar dari sistem.');
+}
+
+// ============================================================
+// APP LAUNCH
+// ============================================================
+function launchApp(){
+  document.getElementById('screen-landing').classList.remove('active');
+  document.getElementById('screen-app').classList.add('active');
+  buildSidebar();
+  // default page
+  const defaults={masyarakat:'m-home',pemda:'pd-home',bgn:'bgn-home'};
+  navigateTo(defaults[currentUser.role]);
+}
+
+function buildSidebar(){
+  const navs={
+    masyarakat:[
+      {id:'m-home',icon:'🏠',label:'Beranda'},
+      {id:'m-lapor',icon:'📝',label:'Buat Laporan'},
+      {id:'m-riwayat',icon:'📋',label:'Riwayat Laporan'},
+      {id:'m-blockchain',icon:'⛓️',label:'Blockchain Audit'},
+      {id:'m-notif',icon:'🔔',label:'Notifikasi'},
+      {id:'m-profil',icon:'👤',label:'Profil'},
+    ],
+    pemda:[
+      {id:'pd-home',icon:'🏠',label:'Dashboard'},
+      {id:'pd-verifikasi',icon:'✅',label:'Verifikasi Laporan'},
+      {id:'pd-laporan',icon:'📊',label:'Semua Laporan'},
+      {id:'pd-sppg',icon:'🍱',label:'Monitor SPPG'},
+      {id:'pd-blockchain',icon:'⛓️',label:'Blockchain Audit'},
+      {id:'pd-notif',icon:'🔔',label:'Notifikasi'},
+    ],
+    bgn:[
+      {id:'bgn-home',icon:'🏠',label:'Control Center'},
+      {id:'bgn-nasional',icon:'🗺️',label:'Data Nasional'},
+      {id:'bgn-laporan',icon:'📋',label:'Semua Laporan'},
+      {id:'bgn-sppg',icon:'🍱',label:'Manajemen SPPG'},
+      {id:'bgn-blockchain',icon:'⛓️',label:'Blockchain Ledger'},
+      {id:'bgn-kebijakan',icon:'📌',label:'Kebijakan'},
+    ]
+  };
+  const nav=navs[currentUser.role];
+  document.getElementById('sidebar-nav').innerHTML=`
+    <div class="nav-section">Menu Utama</div>
+    ${nav.map(n=>`<button class="nav-item" id="nav-${n.id}" onclick="navigateTo('${n.id}')"><span class="ni">${n.icon}</span>${n.label}</button>`).join('')}
+  `;
+  document.getElementById('sidebar-user').innerHTML=`
+    <div class="su-name">${currentUser.nama}</div>
+    <div class="su-role">${currentUser.label}</div>
+    <span class="su-logout" onclick="logout()">🚪 Keluar</span>
+  `;
+}
+
+function navigateTo(pageId){
+  currentPage=pageId;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const navEl=document.getElementById('nav-'+pageId);
+  if(navEl) navEl.classList.add('active');
+  const mc=document.getElementById('main-content');
+  mc.innerHTML=`<div class="page active">${buildPage(pageId)}</div>`;
+  animateBars();
+}
+
+// ============================================================
+// PAGE BUILDER
+// ============================================================
+function buildPage(id){
+  const builders={
+    'm-home':pageMasyarakatHome,
+    'm-lapor':pageMasyarakatLapor,
+    'm-riwayat':pageMasyarakatRiwayat,
+    'm-blockchain':pageBlockchain,
+    'm-notif':pageNotifikasi,
+    'm-profil':pageProfil,
+    'pd-home':pagePemdaHome,
+    'pd-verifikasi':pagePemdaVerifikasi,
+    'pd-laporan':pagePemdaLaporan,
+    'pd-sppg':pageSPPG,
+    'pd-blockchain':pageBlockchain,
+    'pd-notif':pageNotifikasi,
+    'bgn-home':pageBGNHome,
+    'bgn-nasional':pageBGNNasional,
+    'bgn-laporan':pageBGNLaporan,
+    'bgn-sppg':pageSPPG,
+    'bgn-blockchain':pageBlockchain,
+    'bgn-kebijakan':pageKebijakan,
+  };
+  return builders[id] ? builders[id]() : '<p>Halaman tidak ditemukan</p>';
+}
+
+// ============================================================
+// MASYARAKAT PAGES
+// ============================================================
+function pageMasyarakatHome(){
+  const myLaporan=DB.laporan.slice(0,3);
+  return `
+  <div class="welcome-banner">
+    <h2>Selamat datang, ${currentUser.nama}! 👋</h2>
+    <p>${currentUser.kategori} · ${currentUser.wilayah} · NIK terenkripsi: ${hashNIK(currentUser.nik)}</p>
+  </div>
+  <div class="stat-row">
+    <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">Laporan Saya</div><div class="stat-change stat-up">↑ Aktif memantau</div></div>
+    <div class="stat-card"><div class="stat-num">2</div><div class="stat-label">Diverifikasi</div><div class="stat-change stat-up">↑ 66% terproses</div></div>
+    <div class="stat-card"><div class="stat-num">1</div><div class="stat-label">Selesai Ditangani</div><div class="stat-change stat-up">✓ Berhasil</div></div>
+    <div class="stat-card"><div class="stat-num">6</div><div class="stat-label">Total Laporan Sistem</div><div class="stat-change stat-up">↑ +2 hari ini</div></div>
+  </div>
+  <div style="display:flex;gap:1rem;margin-bottom:2rem;flex-wrap:wrap;">
+    <button class="btn btn-green" onclick="navigateTo('m-lapor')">📝 Buat Laporan Baru</button>
+    <button class="btn btn-outline" onclick="navigateTo('m-riwayat')">📋 Riwayat Laporan</button>
+    <button class="btn btn-ghost" onclick="navigateTo('m-blockchain')">⛓️ Audit Trail</button>
+  </div>
+  <div class="table-wrap">
+    <div class="table-header"><h3>Laporan Terbaru Sistem</h3><span style="font-size:.78rem;color:var(--muted);">Real-time · ${new Date().toLocaleDateString('id-ID')}</span></div>
+    <table><thead><tr><th>ID</th><th>Sekolah</th><th>Jenis Masalah</th><th>Status</th><th>Aksi</th></tr></thead>
+    <tbody>${myLaporan.map(l=>`
+      <tr>
+        <td><code style="font-size:.75rem;background:var(--g-pale);padding:.2rem .5rem;border-radius:6px;">${l.id}</code></td>
+        <td><div style="font-weight:500;">${l.sekolah}</div><div style="font-size:.75rem;color:var(--muted);">${l.wilayah}</div></td>
+        <td>${l.jenis}</td>
+        <td>${statusBadge(l.status)}</td>
+        <td><button class="btn btn-ghost btn-sm" onclick="showDetail('${l.id}')">Lihat</button></td>
+      </tr>`).join('')}
+    </tbody></table>
+  </div>`;
+}
+
+function pageMasyarakatLapor(){
+  return `
+  <div class="page-header"><h2>📝 Buat Laporan</h2><p>Laporkan kondisi pelaksanaan MBG yang Anda temui</p></div>
+  <div class="report-form">
+    <div class="form-section-title">📍 Informasi Lokasi</div>
+    <div class="form-row">
+      <div class="form-group"><label>Nama Sekolah *</label><input type="text" id="f-sekolah" placeholder="cth: SDN 01 Mampang"></div>
+      <div class="form-group"><label>Wilayah *</label>
+        <select id="f-wilayah"><option>Jakarta Selatan</option><option>Jakarta Pusat</option><option>Jakarta Utara</option><option>Jakarta Barat</option><option>Jakarta Timur</option><option>Bogor</option><option>Depok</option><option>Tangerang</option><option>Bekasi</option></select>
+      </div>
+    </div>
+    <div class="map-box" onclick="fakeGPS()">
+      <div class="map-icon">📍</div>
+      <p id="gps-status">Klik untuk deteksi lokasi GPS otomatis</p>
+    </div>
+    <div style="margin-top:1.5rem;" class="form-section-title">⚠️ Detail Masalah</div>
+    <div class="form-row">
+      <div class="form-group"><label>Jenis Masalah *</label>
+        <select id="f-jenis">
+          <option>Kualitas Makanan</option>
+          <option>Keterlambatan Distribusi</option>
+          <option>Porsi Tidak Memadai</option>
+          <option>Dugaan Penyimpangan</option>
+          <option>Kebersihan/Sanitasi</option>
+          <option>Lainnya</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Waktu Kejadian *</label><input type="datetime-local" id="f-waktu" value="${new Date().toISOString().slice(0,16)}"></div>
+    </div>
+    <div class="form-group"><label>Deskripsi Lengkap *</label><textarea id="f-desc" placeholder="Ceritakan kondisi yang Anda temui secara detail. Semakin detail, semakin mudah diverifikasi..."></textarea></div>
+    <div class="form-section-title" style="margin-top:1rem;">📷 Bukti Foto/Video</div>
+    <div class="file-upload" onclick="fakeUpload()" id="file-drop">
+      <div class="fu-icon">📷</div>
+      <p id="upload-status">Klik atau seret foto bukti ke sini</p>
+      <p style="font-size:.72rem;color:var(--muted);margin-top:.25rem;">JPG, PNG, MP4 · Maks 10MB</p>
+    </div>
+    <div class="progress-bar" style="margin-top:.75rem;display:none;" id="upload-progress"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="form-section-title" style="margin-top:1.5rem;">🔐 Keamanan & Privasi</div>
+    <div style="background:var(--g-pale);border-radius:12px;padding:1rem;font-size:.8rem;color:var(--muted);line-height:1.65;margin-bottom:1.5rem;">
+      ✅ Identitas Anda <strong>dienkripsi AES-256</strong> dan tidak akan ditampilkan publik.<br>
+      ✅ NIK Anda diubah menjadi <strong>hash kriptografi</strong> sebelum disimpan.<br>
+      ✅ Laporan ini akan dicatat dalam <strong>blockchain ledger</strong> yang tidak dapat dimanipulasi.
+    </div>
+    <div style="display:flex;gap:1rem;">
+      <button class="btn btn-green" style="flex:1;" onclick="submitLaporan()">🚀 Kirim Laporan</button>
+      <button class="btn btn-ghost" onclick="navigateTo('m-home')">Batal</button>
+    </div>
+  </div>`;
+}
+
+function pageMasyarakatRiwayat(){
+  return `
+  <div class="page-header"><h2>📋 Riwayat Laporan</h2><p>Semua laporan yang telah Anda kirim</p></div>
+  <div class="table-wrap">
+    <div class="table-header"><h3>Laporan Saya</h3><span style="font-size:.78rem;color:var(--muted);">Total: ${DB.laporan.length} laporan</span></div>
+    <table><thead><tr><th>ID</th><th>Tanggal</th><th>Sekolah</th><th>Jenis</th><th>Status</th><th>Hash Blockchain</th><th>Aksi</th></tr></thead>
+    <tbody>${DB.laporan.map(l=>`
+      <tr>
+        <td><code style="font-size:.72rem;background:var(--g-pale);padding:.2rem .4rem;border-radius:6px;">${l.id}</code></td>
+        <td style="font-size:.8rem;">${l.tanggal}<br><span style="color:var(--muted);">${l.waktu}</span></td>
+        <td><div style="font-weight:500;font-size:.85rem;">${l.sekolah}</div><div style="font-size:.72rem;color:var(--muted);">${l.wilayah}</div></td>
+        <td style="font-size:.82rem;">${l.jenis}</td>
+        <td>${statusBadge(l.status)}</td>
+        <td><code style="font-size:.65rem;color:var(--g-mid);">${l.hash}</code></td>
+        <td><button class="btn btn-ghost btn-sm" onclick="showDetail('${l.id}')">Detail</button></td>
+      </tr>`).join('')}
+    </tbody></table>
+  </div>`;
+}
+
+// ============================================================
+// PEMDA PAGES
+// ============================================================
+function pagePemdaHome(){
+  const pending=DB.laporan.filter(l=>l.status==='pending').length;
+  const verified=DB.laporan.filter(l=>l.status==='verified').length;
+  const done=DB.laporan.filter(l=>l.status==='done').length;
+  return `
+  <div class="welcome-banner">
+    <h2>Dashboard Pemerintah Daerah 🏛️</h2>
+    <p>${currentUser.wilayah} · ${new Date().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p>
+  </div>
+  <div class="stat-row">
+    <div class="stat-card"><div class="stat-num" style="color:var(--amber);">${pending}</div><div class="stat-label">Menunggu Verifikasi</div><div class="stat-change" style="color:var(--amber);">⚡ Perlu tindakan</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--blue);">${verified}</div><div class="stat-label">Sedang Diproses</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--g-bright);">${done}</div><div class="stat-label">Selesai Ditangani</div></div>
+    <div class="stat-card"><div class="stat-num">${DB.laporan.length}</div><div class="stat-label">Total Laporan</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+    <div class="chart-wrap">
+      <div class="chart-title">📊 Laporan per Jenis Masalah</div>
+      <div class="bar-chart">
+        ${[['Kualitas Makanan',60],['Keterlambatan',30],['Porsi Tidak Memadai',45],['Dugaan Penyimpangan',20],['Kebersihan',15]].map(([l,v])=>`
+        <div class="bar-row"><div class="bar-label">${l}</div><div class="bar-track"><div class="bar-fill" style="width:0%" data-target="${v}%">${v}%</div></div></div>`).join('')}
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">🗺️ Laporan per Wilayah</div>
+      <div class="bar-chart">
+        ${[['Jakarta Selatan',70],['Jakarta Pusat',45],['Jakarta Utara',25],['Jakarta Barat',35],['Jakarta Timur',40]].map(([l,v])=>`
+        <div class="bar-row"><div class="bar-label">${l}</div><div class="bar-track"><div class="bar-fill" style="width:0%" data-target="${v}%">${v}%</div></div></div>`).join('')}
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:1rem;margin-bottom:1.5rem;">
+    <button class="btn btn-blue" onclick="navigateTo('pd-verifikasi')">✅ Mulai Verifikasi</button>
+    <button class="btn btn-outline" onclick="navigateTo('pd-laporan')">📋 Lihat Semua Laporan</button>
+  </div>`;
+}
+
+function pagePemdaVerifikasi(){
+  const pending=DB.laporan.filter(l=>l.status==='pending');
+  return `
+  <div class="page-header"><h2>✅ Verifikasi Laporan</h2><p>${pending.length} laporan menunggu verifikasi Anda</p></div>
+  ${pending.length===0?`<div style="text-align:center;padding:4rem;color:var(--muted);">✅ Semua laporan telah diverifikasi!</div>`:
+  pending.map(l=>`
+  <div class="verif-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem;flex-wrap:wrap;gap:.5rem;">
+      <h4>${l.sekolah} — ${l.jenis}</h4>
+      ${statusBadge(l.status)}
+    </div>
+    <div class="verif-meta">
+      <span>📍 ${l.wilayah}</span>
+      <span>🕐 ${l.tanggal} ${l.waktu}</span>
+      <span>📷 Foto: ${l.foto?'✅ Ada':'❌ Tidak ada'}</span>
+      <span>🔗 Hash: <code style="font-size:.72rem;color:var(--g-mid);">${l.hash}</code></span>
+    </div>
+    <div class="verif-desc">${l.deskripsi}</div>
+    <div class="verif-actions">
+      <button class="btn btn-green btn-sm" onclick="verifikasiLaporan('${l.id}','verified')">✅ Verifikasi Valid</button>
+      <button class="btn btn-red btn-sm" onclick="verifikasiLaporan('${l.id}','rejected')">❌ Tolak Laporan</button>
+      <button class="btn btn-amber btn-sm" onclick="verifikasiLaporan('${l.id}','done')">✓ Tandai Selesai</button>
+      <button class="btn btn-ghost btn-sm" onclick="showDetail('${l.id}')">📄 Detail Lengkap</button>
+    </div>
+  </div>`).join('')}`;
+}
+
+function pagePemdaLaporan(){
+  return `
+  <div class="page-header"><h2>📊 Semua Laporan Wilayah</h2><p>Monitor seluruh laporan di ${currentUser.wilayah}</p></div>
+  <div style="display:flex;gap:.75rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+    <button class="btn btn-outline btn-sm" onclick="filterTable('all')">Semua (${DB.laporan.length})</button>
+    <button class="btn btn-ghost btn-sm" onclick="filterTable('pending')" style="color:var(--amber);">Pending (${DB.laporan.filter(l=>l.status==='pending').length})</button>
+    <button class="btn btn-ghost btn-sm" onclick="filterTable('verified')" style="color:var(--blue);">Verified (${DB.laporan.filter(l=>l.status==='verified').length})</button>
+    <button class="btn btn-ghost btn-sm" onclick="filterTable('done')" style="color:var(--g-bright);">Selesai (${DB.laporan.filter(l=>l.status==='done').length})</button>
+  </div>
+  <div class="table-wrap" id="laporan-table">
+    <div class="table-header"><h3>Laporan Masuk</h3></div>
+    <table><thead><tr><th>ID</th><th>Tanggal</th><th>Sekolah</th><th>Jenis</th><th>Status</th><th>Aksi</th></tr></thead>
+    <tbody id="laporan-tbody">${renderLaporanRows(DB.laporan)}</tbody></table>
+  </div>`;
+}
+
+function renderLaporanRows(data){
+  return data.map(l=>`
+  <tr>
+    <td><code style="font-size:.72rem;background:var(--g-pale);padding:.2rem .4rem;border-radius:6px;">${l.id}</code></td>
+    <td style="font-size:.8rem;">${l.tanggal}</td>
+    <td><div style="font-weight:500;font-size:.85rem;">${l.sekolah}</div><div style="font-size:.72rem;color:var(--muted);">${l.wilayah}</div></td>
+    <td style="font-size:.82rem;">${l.jenis}</td>
+    <td>${statusBadge(l.status)}</td>
+    <td style="display:flex;gap:.4rem;">
+      <button class="btn btn-ghost btn-sm" onclick="showDetail('${l.id}')">Detail</button>
+      ${l.status==='pending'?`<button class="btn btn-green btn-sm" onclick="verifikasiLaporan('${l.id}','verified')">✅</button><button class="btn btn-red btn-sm" onclick="verifikasiLaporan('${l.id}','rejected')">❌</button>`:''}
+    </td>
+  </tr>`).join('');
+}
+
+function filterTable(status){
+  const data=status==='all'?DB.laporan:DB.laporan.filter(l=>l.status===status);
+  const el=document.getElementById('laporan-tbody');
+  if(el) el.innerHTML=renderLaporanRows(data);
+}
+
+// ============================================================
+// BGN PAGES
+// ============================================================
+function pageBGNHome(){
+  return `
+  <div class="welcome-banner" style="background:linear-gradient(135deg,#0a3622,#1a4a30);">
+    <h2>🇮🇩 Control Center BGN</h2>
+    <p>Monitoring Nasional Program Makan Bergizi Gratis · ${new Date().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p>
+  </div>
+  <div class="stat-row">
+    <div class="stat-card"><div class="stat-num">47.2M</div><div class="stat-label">Penerima Manfaat</div><div class="stat-change stat-up">↑ Data nasional</div></div>
+    <div class="stat-card"><div class="stat-num">12,847</div><div class="stat-label">SPPG Aktif</div><div class="stat-change stat-up">↑ 98.2% online</div></div>
+    <div class="stat-card"><div class="stat-num">${DB.laporan.length}</div><div class="stat-label">Total Laporan Hari ini</div><div class="stat-change stat-up">↑ +2 jam terakhir</div></div>
+    <div class="stat-card"><div class="stat-num">${DB.blockchain.length}</div><div class="stat-label">Block Terverifikasi</div><div class="stat-change stat-up">⛓️ Chain valid</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+    <div class="chart-wrap">
+      <div class="chart-title">📊 Tren Laporan 7 Hari Terakhir</div>
+      <div class="bar-chart">
+        ${[['Senin',40],['Selasa',55],['Rabu',35],['Kamis',70],['Jumat',60],['Sabtu',20],['Minggu',15]].map(([l,v])=>`
+        <div class="bar-row"><div class="bar-label">${l}</div><div class="bar-track"><div class="bar-fill" style="width:0%" data-target="${v}%">${v}</div></div></div>`).join('')}
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">🔴 Status Laporan Nasional</div>
+      <div style="padding:1rem 0;">
+        ${[['Pending','var(--amber)',35],['Terverifikasi','var(--blue)',28],['Selesai','var(--g-bright)',30],['Ditolak','var(--red)',7]].map(([l,c,v])=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+          <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;"><div style="width:10px;height:10px;border-radius:50%;background:${c};"></div>${l}</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;color:${c};">${v}%</div>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+    <button class="btn btn-green" onclick="navigateTo('bgn-nasional')">🗺️ Data Nasional</button>
+    <button class="btn btn-amber" onclick="navigateTo('bgn-laporan')">📋 Semua Laporan</button>
+    <button class="btn btn-outline" onclick="navigateTo('bgn-blockchain')">⛓️ Blockchain Ledger</button>
+  </div>`;
+}
+
+function pageBGNNasional(){
+  const provinces=[
+    ['DKI Jakarta',142,'high'],['Jawa Barat',98,'medium'],['Jawa Tengah',87,'medium'],
+    ['Jawa Timur',110,'high'],['Banten',45,'low'],['Sumatera Utara',67,'medium'],
+    ['Sulawesi Selatan',34,'low'],['Kalimantan Timur',28,'low'],['Bali',22,'low'],['Papua',56,'medium']
+  ];
+  return `
+  <div class="page-header"><h2>🗺️ Data Nasional</h2><p>Distribusi laporan per provinsi seluruh Indonesia</p></div>
+  <div class="chart-wrap">
+    <div class="chart-title">📊 Laporan per Provinsi</div>
+    <div class="bar-chart">
+      ${provinces.map(([n,v,level])=>{
+        const colors={'high':'var(--red)','medium':'var(--amber)','low':'var(--g-bright)'};
+        const max=142;const pct=Math.round(v/max*100);
+        return `<div class="bar-row"><div class="bar-label">${n}</div><div class="bar-track"><div class="bar-fill" style="width:0%;background:linear-gradient(90deg,${colors[level]},${colors[level]}aa)" data-target="${pct}%">${v}</div></div></div>`;
+      }).join('')}
+    </div>
+  </div>
+  <div style="display:flex;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;font-size:.8rem;">
+    <span style="display:flex;align-items:center;gap:.4rem;"><span style="width:10px;height:10px;border-radius:50%;background:var(--red);display:inline-block;"></span> Tinggi (>100)</span>
+    <span style="display:flex;align-items:center;gap:.4rem;"><span style="width:10px;height:10px;border-radius:50%;background:var(--amber);display:inline-block;"></span> Sedang (50-100)</span>
+    <span style="display:flex;align-items:center;gap:.4rem;"><span style="width:10px;height:10px;border-radius:50%;background:var(--g-bright);display:inline-block;"></span> Rendah (<50)</span>
+  </div>
+  <div class="table-wrap">
+    <div class="table-header"><h3>Detail per Provinsi</h3></div>
+    <table><thead><tr><th>Provinsi</th><th>Jumlah Laporan</th><th>SPPG Terdaftar</th><th>Respons Rate</th><th>Level</th></tr></thead>
+    <tbody>${provinces.map(([n,v,l])=>`
+      <tr><td>${n}</td><td>${v}</td><td>${Math.round(v*8)}</td><td>${Math.round(65+Math.random()*30)}%</td>
+      <td><span class="status-badge ${l==='high'?'status-rejected':l==='medium'?'status-pending':'status-done'}">${l==='high'?'Tinggi':l==='medium'?'Sedang':'Rendah'}</span></td>
+      </tr>`).join('')}
+    </tbody></table>
+  </div>`;
+}
+
+function pageBGNLaporan(){
+  return `
+  <div class="page-header"><h2>📋 Semua Laporan Nasional</h2><p>Database laporan seluruh Indonesia</p></div>
+  <div class="table-wrap">
+    <div class="table-header"><h3>Laporan Nasional · Total ${DB.laporan.length}</h3>
+      <button class="btn btn-green btn-sm" onclick="exportData()">⬇️ Export CSV</button>
+    </div>
+    <table><thead><tr><th>ID</th><th>Tanggal</th><th>Sekolah</th><th>Wilayah</th><th>Jenis</th><th>Status</th><th>Aksi</th></tr></thead>
+    <tbody>${DB.laporan.map(l=>`
+      <tr>
+        <td><code style="font-size:.72rem;background:var(--g-pale);padding:.2rem .4rem;border-radius:6px;">${l.id}</code></td>
+        <td style="font-size:.8rem;">${l.tanggal}</td>
+        <td style="font-size:.85rem;font-weight:500;">${l.sekolah}</td>
+        <td style="font-size:.78rem;color:var(--muted);">${l.wilayah}</td>
+        <td style="font-size:.82rem;">${l.jenis}</td>
+        <td>${statusBadge(l.status)}</td>
+        <td><button class="btn btn-ghost btn-sm" onclick="showDetail('${l.id}')">Detail</button></td>
+      </tr>`).join('')}
+    </tbody></table>
+  </div>`;
+}
+
+// ============================================================
+// SHARED PAGES
+// ============================================================
+function pageBlockchain(){
+  return `
+  <div class="page-header"><h2>⛓️ Blockchain Audit Trail</h2><p>Rekam jejak laporan yang tidak dapat dimanipulasi</p></div>
+  <div style="background:var(--g-deep);border-radius:16px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;color:rgba(255,255,255,.7);font-size:.85rem;">
+    ⛓️ <strong style="color:var(--g-light);">Blockchain Integrity:</strong> Semua ${DB.blockchain.length} block tervalidasi · Genesis block: <code style="color:var(--g-bright);">9e2b4f1c8d7a3e05</code> · Status: <span style="color:var(--g-bright);">✅ VALID</span>
+  </div>
+  <div class="chain-feed">
+    ${DB.blockchain.slice().reverse().map((b,i)=>`
+    <div class="chain-item">
+      <div style="background:var(--g-pale);border-radius:10px;padding:.6rem .9rem;text-align:center;flex-shrink:0;">
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--g-deep);">#${b.block}</div>
+        <div style="font-size:.65rem;color:var(--muted);">BLOCK</div>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:.4rem;">
+          <span style="font-size:.72rem;color:var(--muted);">🕐 ${b.ts}</span>
+          <span style="font-size:.72rem;color:var(--muted);">📄 ${b.laporan}</span>
+          ${i===0?`<span style="background:var(--g-pale);color:var(--g-mid);padding:.1rem .5rem;border-radius:100px;font-size:.65rem;font-weight:700;">LATEST</span>`:''}
+        </div>
+        <div class="chain-meta" style="margin-bottom:.3rem;">Hash: <span class="chain-hash">${b.hash}</span></div>
+        <div class="chain-meta">Prev: <span class="chain-hash">${b.prev}</span></div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="showDetail('${b.laporan}')">📄</button>
+    </div>`).join('')}
+  </div>`;
+}
+
+function pageNotifikasi(){
+  const notifs=[
+    {title:'Laporan LP-002 Diverifikasi',msg:'Laporan keterlambatan di SMP 14 Tebet telah diverifikasi oleh Pemda DKI.',type:'',time:'5 menit lalu',unread:true},
+    {title:'Laporan LP-003 Selesai',msg:'Laporan porsi tidak memadai di SDN 05 Kebayoran telah ditangani.',type:'',time:'2 jam lalu',unread:true},
+    {title:'Peringatan: Laporan Baru',msg:'Ada 3 laporan baru di wilayah Jakarta Selatan yang belum diproses.',type:'amber',time:'3 jam lalu',unread:false},
+    {title:'Sistem Blockchain',msg:'Block #1007 berhasil ditambahkan ke blockchain ledger.',type:'',time:'5 jam lalu',unread:false},
+    {title:'Pengingat Verifikasi',msg:'Terdapat 4 laporan pending yang membutuhkan verifikasi segera.',type:'red',time:'1 hari lalu',unread:false},
+  ];
+  return `
+  <div class="page-header"><h2>🔔 Notifikasi</h2><p>${notifs.filter(n=>n.unread).length} notifikasi belum dibaca</p></div>
+  <div class="notif-list">
+    ${notifs.map(n=>`
+    <div class="notif-item ${n.unread?'unread':''} ${n.type}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.25rem;">
+        <h4>${n.unread?'🔵 ':''}${n.title}</h4>
+        <span style="font-size:.72rem;color:var(--muted);">${n.time}</span>
+      </div>
+      <p>${n.msg}</p>
+    </div>`).join('')}
+  </div>`;
+}
+
+function pageProfil(){
+  const u=currentUser;
+  return `
+  <div class="page-header"><h2>👤 Profil Pengguna</h2><p>Informasi akun Anda yang tersimpan aman di sistem</p></div>
+  <div class="profile-card">
+    <div class="avatar">${u.avatar}</div>
+    <div class="profile-name">${u.nama}</div>
+    <div class="profile-role">${u.label}</div>
+    <div class="profile-info">
+      ${u.nik?`<div class="pi-row"><span class="pi-key">NIK (Hash)</span><code style="font-size:.78rem;color:var(--g-mid);">${hashNIK(u.nik)}</code></div>`:''}
+      ${u.kategori?`<div class="pi-row"><span class="pi-key">Kategori</span><span class="pi-val">${u.kategori}</span></div>`:''}
+      ${u.wilayah?`<div class="pi-row"><span class="pi-key">Wilayah</span><span class="pi-val">${u.wilayah}</span></div>`:''}
+      ${u.unit?`<div class="pi-row"><span class="pi-key">Unit</span><span class="pi-val">${u.unit}</span></div>`:''}
+      <div class="pi-row"><span class="pi-key">Role</span><span class="pi-val">${u.label}</span></div>
+      <div class="pi-row"><span class="pi-key">Enkripsi</span><span class="pi-val" style="color:var(--g-mid);">AES-256 ✅</span></div>
+      <div class="pi-row"><span class="pi-key">Status</span><span class="pi-val" style="color:var(--g-bright);">● Aktif</span></div>
+    </div>
+    <button class="btn btn-red btn-sm" style="margin-top:1.5rem;" onclick="logout()">🚪 Keluar dari Sistem</button>
+  </div>`;
+}
+
+function pageSPPG(){
+  const sppgs=[
+    {nama:'SPPG Jakarta Selatan 01',lokasi:'Mampang Prapatan',status:'Aktif',laporan:3,skor:85},
+    {nama:'SPPG Jakarta Selatan 02',lokasi:'Tebet',status:'Aktif',laporan:2,skor:78},
+    {nama:'SPPG Jakarta Pusat 01',lokasi:'Menteng',status:'Aktif',laporan:1,skor:92},
+    {nama:'SPPG Jakarta Utara 01',lokasi:'Penjaringan',status:'Masalah',laporan:5,skor:62},
+    {nama:'SPPG Jakarta Barat 01',lokasi:'Grogol',status:'Aktif',laporan:0,skor:95},
+  ];
+  return `
+  <div class="page-header"><h2>🍱 Monitor SPPG</h2><p>Performa Satuan Pelayanan Pemenuhan Gizi</p></div>
+  <div class="stat-row">
+    <div class="stat-card"><div class="stat-num">5</div><div class="stat-label">Total SPPG Terpantau</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--g-bright);">4</div><div class="stat-label">Status Aktif</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--red);">1</div><div class="stat-label">Perlu Perhatian</div></div>
+    <div class="stat-card"><div class="stat-num">82</div><div class="stat-label">Skor Rata-rata</div></div>
+  </div>
+  <div class="table-wrap">
+    <div class="table-header"><h3>Daftar SPPG</h3></div>
+    <table><thead><tr><th>Nama SPPG</th><th>Lokasi</th><th>Status</th><th>Laporan Masuk</th><th>Skor Kinerja</th><th>Aksi</th></tr></thead>
+    <tbody>${sppgs.map(s=>`
+      <tr>
+        <td style="font-weight:500;">${s.nama}</td>
+        <td style="color:var(--muted);font-size:.82rem;">${s.lokasi}</td>
+        <td><span class="status-badge ${s.status==='Aktif'?'status-done':'status-rejected'}">${s.status}</span></td>
+        <td style="font-weight:600;color:${s.laporan>3?'var(--red)':'var(--ink)'};">${s.laporan}</td>
+        <td>
+          <div style="display:flex;align-items:center;gap:.75rem;">
+            <div style="flex:1;height:8px;background:var(--border);border-radius:100px;overflow:hidden;min-width:80px;">
+              <div style="height:100%;width:${s.skor}%;background:${s.skor>=85?'var(--g-bright)':s.skor>=70?'var(--amber)':'var(--red)'};border-radius:100px;"></div>
+            </div>
+            <span style="font-size:.82rem;font-weight:600;">${s.skor}</span>
+          </div>
+        </td>
+        <td><button class="btn btn-ghost btn-sm" onclick="showToast('info','SPPG '+encodeURIComponent('${s.nama}'),'Detail SPPG dalam pengembangan')">Detail</button></td>
+      </tr>`).join('')}
+    </tbody></table>
+  </div>`;
+}
+
+function pageKebijakan(){
+  return `
+  <div class="page-header"><h2>📌 Kebijakan & Rekomendasi</h2><p>Rumusan kebijakan berdasarkan data laporan nasional</p></div>
+  <div style="display:flex;flex-direction:column;gap:1rem;">
+    ${[
+      {title:'Standarisasi Kualitas Makanan',status:'Aktif',desc:'Menetapkan standar minimum protein, karbohidrat, dan sayuran per porsi MBG berdasarkan data laporan kualitas yang masuk.',prioritas:'Tinggi'},
+      {title:'Sistem Monitoring Distribusi Real-time',status:'Draft',desc:'Mengintegrasikan GPS kendaraan SPPG dengan dashboard monitoring untuk memantau ketepatan waktu distribusi.',prioritas:'Tinggi'},
+      {title:'Audit SPPG Berkala',status:'Berjalan',desc:'Jadwal audit mingguan untuk SPPG dengan skor kinerja di bawah 70, termasuk inspeksi dapur dan sampling makanan.',prioritas:'Sedang'},
+      {title:'Edukasi Penggunaan Platform',status:'Draft',desc:'Program pelatihan penggunaan MBG Watch untuk relawan komunitas dan perwakilan orang tua sekolah di seluruh wilayah.',prioritas:'Sedang'},
+    ].map(k=>`
+    <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.5rem;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem;">
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;color:var(--g-deep);">${k.title}</h3>
+        <div style="display:flex;gap:.5rem;">
+          <span class="status-badge ${k.status==='Aktif'?'status-done':k.status==='Berjalan'?'status-verified':'status-pending'}">${k.status}</span>
+          <span class="status-badge ${k.prioritas==='Tinggi'?'status-rejected':'status-pending'}">${k.prioritas}</span>
+        </div>
+      </div>
+      <p style="font-size:.87rem;color:var(--muted);line-height:1.6;">${k.desc}</p>
+    </div>`).join('')}
+  </div>`;
+}
+
+// ============================================================
+// ACTIONS
+// ============================================================
+function submitLaporan(){
+  const sekolah=document.getElementById('f-sekolah')?.value;
+  const jenis=document.getElementById('f-jenis')?.value;
+  const desc=document.getElementById('f-desc')?.value;
+  if(!sekolah||!desc){showToast('error','Form tidak lengkap','Isi semua field yang wajib (*)');return;}
+  const newId=`LP-00${DB.laporan.length+1}`;
+  const hash=generateHash();
+  const newLaporan={
+    id:newId,tanggal:new Date().toISOString().split('T')[0],waktu:new Date().toTimeString().slice(0,5),
+    sekolah,wilayah:document.getElementById('f-wilayah')?.value||'Jakarta Selatan',
+    jenis,deskripsi:desc,status:'pending',pelapor:'Anonim',foto:true,hash,verified_by:null
+  };
+  DB.laporan.unshift(newLaporan);
+  DB.blockchain.push({block:1007+DB.laporan.length,hash,prev:DB.blockchain[DB.blockchain.length-1].hash,ts:new Date().toISOString().replace('T',' ').slice(0,19),laporan:newId});
+  showToast('success','Laporan terkirim! ✅',`ID: ${newId} · Hash: ${hash} · Dicatat di blockchain`);
+  setTimeout(()=>navigateTo('m-riwayat'),1500);
+}
+
+function verifikasiLaporan(id,status){
+  const l=DB.laporan.find(x=>x.id===id);
+  if(l){
+    l.status=status;
+    l.verified_by=currentUser.nama;
+    const msgs={verified:'Laporan diverifikasi sebagai valid',rejected:'Laporan ditolak',done:'Laporan ditandai selesai'};
+    showToast('success','Status diperbarui',msgs[status]);
+    setTimeout(()=>navigateTo(currentPage),800);
+  }
+}
+
+function showDetail(id){
+  const l=DB.laporan.find(x=>x.id===id);
+  if(!l) return;
+  document.getElementById('modal-detail-content').innerHTML=`
+    <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;color:var(--g-deep);margin-bottom:.25rem;">${l.id} — ${l.jenis}</h2>
+    <p style="color:var(--muted);font-size:.85rem;margin-bottom:1.5rem;">${l.sekolah} · ${l.wilayah}</p>
+    <div style="display:flex;flex-direction:column;gap:.75rem;font-size:.85rem;">
+      <div style="display:flex;gap:1rem;"><span style="color:var(--muted);width:120px;">Status</span>${statusBadge(l.status)}</div>
+      <div style="display:flex;gap:1rem;"><span style="color:var(--muted);width:120px;">Tanggal</span><span>${l.tanggal} ${l.waktu}</span></div>
+      <div style="display:flex;gap:1rem;"><span style="color:var(--muted);width:120px;">Jenis</span><span>${l.jenis}</span></div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;"><span style="color:var(--muted);width:120px;">Deskripsi</span><span style="line-height:1.6;">${l.deskripsi}</span></div>
+      <div style="display:flex;gap:1rem;"><span style="color:var(--muted);width:120px;">Foto Bukti</span><span>${l.foto?'✅ Tersedia':'❌ Tidak ada'}</span></div>
+      <div style="display:flex;gap:1rem;"><span style="color:var(--muted);width:120px;">Diverifikasi</span><span>${l.verified_by||'Belum diverifikasi'}</span></div>
+      <div style="background:var(--g-pale);border-radius:10px;padding:1rem;margin-top:.5rem;">
+        <div style="font-size:.72rem;font-weight:700;color:var(--muted);margin-bottom:.4rem;">⛓️ BLOCKCHAIN RECORD</div>
+        <div style="font-family:monospace;font-size:.72rem;color:var(--g-mid);word-break:break-all;">Hash: ${l.hash}</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:.75rem;margin-top:1.5rem;flex-wrap:wrap;">
+      ${l.status==='pending'&&(currentUser.role==='pemda'||currentUser.role==='bgn')?`
+        <button class="btn btn-green btn-sm" onclick="verifikasiLaporan('${l.id}','verified');closeModal('modal-detail')">✅ Verifikasi</button>
+        <button class="btn btn-red btn-sm" onclick="verifikasiLaporan('${l.id}','rejected');closeModal('modal-detail')">❌ Tolak</button>
+        <button class="btn btn-amber btn-sm" onclick="verifikasiLaporan('${l.id}','done');closeModal('modal-detail')">✓ Selesai</button>`:''}
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-detail')">Tutup</button>
+    </div>`;
+  openModal('modal-detail');
+}
+
+function fakeGPS(){
+  const coords=['6°13\'48"S 106°47\'59"E','6°12\'30"S 106°48\'45"E','6°14\'10"S 106°46\'30"E'];
+  const c=coords[Math.floor(Math.random()*coords.length)];
+  document.getElementById('gps-status').innerHTML=`📍 Lokasi terdeteksi: ${c} · Akurasi ±5m <span style="color:var(--g-bright);font-weight:700;">✅</span>`;
+  showToast('success','GPS terdeteksi',`Koordinat: ${c}`);
+}
+
+function fakeUpload(){
+  const prog=document.getElementById('upload-progress');
+  const fill=document.getElementById('progress-fill');
+  prog.style.display='block';
+  let p=0;
+  const iv=setInterval(()=>{
+    p+=Math.random()*20;
+    if(p>=100){p=100;clearInterval(iv);document.getElementById('upload-status').innerHTML='📷 foto_bukti.jpg · 2.4MB <span style="color:var(--g-bright);">✅ Terupload</span>';showToast('success','Foto terupload','File berhasil diupload ke server');}
+    fill.style.width=p+'%';
+  },200);
+}
+
+function exportData(){
+  showToast('info','Export CSV','Data sedang disiapkan untuk diunduh...');
+  setTimeout(()=>showToast('success','Export selesai','File mbg-watch-data.csv siap diunduh'),1500);
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function statusBadge(s){
+  const m={pending:['status-pending','⏳ Menunggu'],verified:['status-verified','🔵 Diverifikasi'],done:['status-done','✅ Selesai'],rejected:['status-rejected','❌ Ditolak']};
+  const [cls,txt]=m[s]||['status-pending','Tidak diketahui'];
+  return `<span class="status-badge ${cls}">${txt}</span>`;
+}
+
+function hashNIK(nik){
+  if(!nik) return 'hash_tidak_tersedia';
+  let h=0;for(let i=0;i<nik.length;i++){h=((h<<5)-h)+nik.charCodeAt(i);h|=0;}
+  return 'sha256_'+Math.abs(h).toString(16).padStart(8,'0')+'...';
+}
+
+function generateHash(){
+  const chars='abcdef0123456789';
+  return Array.from({length:16},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+}
+
+function showToast(type,title,msg){
+  const tc=document.getElementById('toast-container');
+  const t=document.createElement('div');
+  t.className=`toast ${type}`;
+  t.innerHTML=`<div class="toast-icon"></div><div class="toast-body"><strong>${title}</strong><span>${msg}</span></div>`;
+  tc.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(40px)';t.style.transition='all .3s';setTimeout(()=>t.remove(),300);},4000);
+}
+
+function animateBars(){
+  setTimeout(()=>{
+    document.querySelectorAll('.bar-fill[data-target]').forEach(b=>{
+      b.style.width=b.dataset.target;
+    });
+  },100);
+}
+</script>
+</body>
+</html>
